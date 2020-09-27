@@ -18,9 +18,6 @@ add_subdirectory(src)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
     enable_testing()
-
-    set(INSTALL_GTEST OFF)
-    add_subdirectory(extern/googletest)
     add_subdirectory(test)
 
 endif()
