@@ -1,3 +1,5 @@
+![CMake](https://github.com/foldedwave/Instil/workflows/CMake/badge.svg?branch=master)
+
 # Instil
 IoC container for C++.
 
