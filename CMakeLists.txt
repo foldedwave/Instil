@@ -6,9 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_program(IWYU_PATH NAMES include-what-you-use iwyu)
 if(NOT IWYU_PATH)
-  message(FATAL_ERROR "Could not find the program include-what-you-use")
+  message(WARNING "Could not find the program include-what-you-use")
+else()
+  set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
 endif()
-set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
 
 # include(CTest)
 # enable_testing()
