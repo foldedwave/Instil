@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18.3)
+cmake_minimum_required(VERSION 3.17.0)
 project(Instil VERSION 0.1.1)
 
 set(CMAKE_CXX_STANDARD 11)
