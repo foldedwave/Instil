@@ -25,7 +25,7 @@ public:
     static T *Apply(string scopeName, const Tuple &x);
 };
 
-auto NamedScopeStrategy::objectMapScopes =
+map<string, map<string, void *> *> *NamedScopeStrategy::objectMapScopes =
     new map<string, map<string, void *> *>();
 
 template <class T, typename Tuple, int... Indices>

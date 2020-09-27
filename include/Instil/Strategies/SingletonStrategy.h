@@ -25,7 +25,7 @@ public:
     static T *Apply(const Tuple &x);
 };
 
-auto SingletonStrategy::objectMap = new map<string, void *>();
+map<string, void *> * SingletonStrategy::objectMap = new map<string, void *>();
 
 template <class T, typename Tuple, int... Indices>
 T *SingletonStrategy::ApplyImpl(const Tuple &x, IndicesType<Indices...>)
