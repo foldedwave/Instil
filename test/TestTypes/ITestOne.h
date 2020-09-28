@@ -5,6 +5,7 @@ class ITestOne
 {
 public:
     virtual void Call1() = 0;
+    virtual ~ITestOne() {};
 };
 
 #endif

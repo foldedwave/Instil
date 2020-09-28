@@ -11,6 +11,8 @@
 #include "TestTypes/TestOne.h"
 #include "TestTypes/TestTwo.h"
 
+#include <memory>
+
 REGISTER_TYPE_INFO(ITestOne);
 REGISTER_TYPE_INFO(ITestTwo);
 REGISTER_TYPE_INFO(TestOne);

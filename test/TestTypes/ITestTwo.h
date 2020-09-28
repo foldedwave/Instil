@@ -3,11 +3,16 @@
 
 #include "ITestOne.h"
 
+#include <memory>
+
+using std::shared_ptr;
+
 class ITestTwo
 {
 public:
-    virtual ITestOne *GetOne() = 0;
+    virtual shared_ptr<ITestOne> GetOne() = 0;
     virtual void Call2() = 0;
+    virtual ~ITestTwo() {};
 };
 
 #endif

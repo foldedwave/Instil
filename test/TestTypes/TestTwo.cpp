@@ -3,12 +3,14 @@
 #include "ITestOne.h"
 #include <iostream>
 
-TestTwo::TestTwo(ITestOne *one)
+using std::shared_ptr;
+
+TestTwo::TestTwo(shared_ptr<ITestOne>one)
 {
     _one = one;
 }
 
-ITestOne *TestTwo::GetOne()
+shared_ptr<ITestOne>TestTwo::GetOne()
 {
     return _one;
 }
@@ -17,4 +19,9 @@ void TestTwo::Call2()
 {
     std::cout << "Call2" << std::endl;
     _one->Call1();
+}
+
+TestTwo::~TestTwo()
+{
+    
 }

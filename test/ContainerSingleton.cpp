@@ -23,6 +23,7 @@ TEST(Container, SingletonRequestForSameObjectReturnsSameInstance)
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestOne>::Get();
 
+    EXPECT_EQ(testOne.use_count(), 3);
     EXPECT_EQ(testOne, testTwo);
 }
 
@@ -33,6 +34,8 @@ TEST(Container, SingletonRequestForObjectChildObjectsArePopulated)
 
     auto testTwo = Container<ITestTwo>::Get();
 
+    EXPECT_EQ(testTwo.use_count(), 2);
+    EXPECT_EQ(testTwo->GetOne().use_count(), 3);
     EXPECT_TRUE(testTwo->GetOne() != nullptr);
 }
 
@@ -44,6 +47,9 @@ TEST(Container, SingletonRequestForSameObjectInHeirarchyReturnsSameInstance)
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestTwo>::Get();
 
+    EXPECT_EQ(testOne.use_count(), 3);
+    EXPECT_EQ(testTwo->GetOne().use_count(), 4);
+    EXPECT_EQ(testTwo.use_count(), 2);
     EXPECT_EQ(testOne, testTwo->GetOne());
 }
 

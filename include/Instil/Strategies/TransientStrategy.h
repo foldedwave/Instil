@@ -8,6 +8,7 @@
 #include "../IndicesBuilder.h"
 
 using std::get;
+using std::shared_ptr;
 
 class TransientStrategy
 {
@@ -17,7 +18,7 @@ private:
 
 public:
   template <class T, typename Tuple>
-  static T *Apply(const Tuple &x);
+  static shared_ptr<T> Apply(const Tuple &x);
 };
 
 template <class T, typename Tuple, int... Indices>
@@ -27,9 +28,9 @@ T *TransientStrategy::ApplyImpl(const Tuple &x, IndicesType<Indices...>)
 }
 
 template <class T, typename Tuple>
-T *TransientStrategy::Apply(const Tuple &x)
+shared_ptr<T> TransientStrategy::Apply(const Tuple &x)
 {
-  return ApplyImpl<T>(x, BuildIndices<Tuple>());
+  return shared_ptr<T>(ApplyImpl<T>(x, BuildIndices<Tuple>()));
 }
 
 #endif

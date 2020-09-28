@@ -17,6 +17,7 @@
 using std::function;
 using std::string;
 using std::tuple;
+using std::shared_ptr;
 
 template <typename... Arguments>
 class Container;
@@ -26,23 +27,23 @@ template <class I>
 class Container<I>
 {
 public:
-    static function<I *(string)> build;
-    static I *Get();
-    static I *Get(string scope);
+    static function<shared_ptr<I>(string)> build;
+    static shared_ptr<I> Get();
+    static shared_ptr<I> Get(string scope);
     static Scope scope;
 };
 
 template <class I>
-function<I *(string)> Container<I>::build;
+function<shared_ptr<I>(string)> Container<I>::build;
 
 template <class I>
-I *Container<I>::Get()
+shared_ptr<I> Container<I>::Get()
 {
     return build("");
 }
 
 template <class I>
-I *Container<I>::Get(string scope)
+shared_ptr<I> Container<I>::Get(string scope)
 {
     return build(scope);
 }
@@ -56,13 +57,13 @@ class Container<I, T>
 {
 public:
     const tuple<> empty = make_tuple<>();
-    static I *Create()
+    static shared_ptr<I> Create()
     {
 #ifdef STDOUT
         std::cout << "Container<I, T>::Create without args - " << TypeParseTraits<I>::name << std::endl;
 #endif
 
-        I *obj = Builder<I, T, decltype(empty)>::OutInitial();
+        shared_ptr<I> obj = Builder<I, T, decltype(empty)>::OutInitial();
 
         return obj;
     }
@@ -84,12 +85,12 @@ class Container<I, T, Arguments...>
 {
 public:
     const tuple<> empty = make_tuple<>();
-    static I *Create()
+    static shared_ptr<I> Create()
     {
 #ifdef STDOUT
         std::cout << "Container<I, T, Arguments...>::Create with args - " << TypeParseTraits<I>::name << std::endl;
 #endif
-        I *obj = Builder<I, T, decltype(empty), Arguments...>::OutInitial();
+        shared_ptr<I> obj = Builder<I, T, decltype(empty), Arguments...>::OutInitial();
 
         return obj;
     }

@@ -11,6 +11,7 @@
 using std::string;
 using std::make_tuple;
 using std::tuple_cat;
+using std::shared_ptr;
 
 template <typename... Arguments>
 class Container;
@@ -33,13 +34,13 @@ public:
     }
 
     // Entry point when the ctor has no args
-    static I *BuildInitial(string scopeName)
+    static shared_ptr<I> BuildInitial(string scopeName)
     {
         return Build(scopeName, make_tuple<>());
     }
 
     // Argument tuple is complete, pass in to relevant apply function
-    static I *Build(string scopeName, TupleArgs args)
+    static shared_ptr<I> Build(string scopeName, TupleArgs args)
     {
 #ifdef STDOUT
         std::cout << "Display::Out Base Case, Completed for - " << TypeParseTraits<T>::name << std::endl;
@@ -78,13 +79,13 @@ public:
     }
 
     // Entry point for building a tuple of args
-    static I *BuildInitial(string scopeName)
+    static shared_ptr<I> BuildInitial(string scopeName)
     {
         return Build(scopeName, make_tuple<>());
     }
 
     // Add the next argument to the tuple
-    static I *Build(string scopeName, TupleArgs args)
+    static shared_ptr<I> Build(string scopeName, TupleArgs args)
     {
 #ifdef STDOUT
         std::cout << "Display::Out Getting parameter - " << TypeParseTraits<A>::name << std::endl;
