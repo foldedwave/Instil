@@ -11,9 +11,6 @@ else()
   set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
 endif()
 
-# include(CTest)
-# enable_testing()
-
 add_subdirectory(src)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
