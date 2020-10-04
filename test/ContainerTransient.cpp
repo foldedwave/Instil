@@ -12,6 +12,9 @@
 
 #include <memory>
 
+using Instil::Container;
+using Instil::Scope;
+
 TEST(Container, TransientRequestForSameObjectReturnsDifferentInstance)
 {
     auto testOne = Container<ITestOne>::Get();

@@ -10,6 +10,9 @@
 #include "TestTypes/TestOne.h"
 #include "TestTypes/TestTwo.h"
 
+using Instil::Container;
+using Instil::Scope;
+
 TEST(Container, NamedScopeRequestForSameObjectReturnsSameInstance)
 {
     auto testOne = Container<ITestOne>::Get("TestScope");

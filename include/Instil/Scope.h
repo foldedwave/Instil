@@ -1,12 +1,16 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-enum Scope
+namespace Instil
 {
-    Undefined,
-    Transient,
-    Singleton,
-    Named
-};
 
+    enum Scope
+    {
+        Undefined,
+        Transient,
+        Singleton,
+        Named
+    };
+
+}
 #endif

@@ -3,31 +3,35 @@
 
 #include <tuple>
 
-using std::tuple_size;
-
-template <int... Indices>
-struct IndicesType
+namespace Instil
 {
-    typedef IndicesType<Indices..., sizeof...(Indices)> next;
-};
 
-template <int Size>
-struct IndicesBuilder
-{
-    typedef typename IndicesBuilder<Size - 1>::type::next type;
-};
+    using std::tuple_size;
 
-template <>
-struct IndicesBuilder<0>
-{
-    typedef IndicesType<> type;
-};
+    template <int... Indices>
+    struct IndicesType
+    {
+        typedef IndicesType<Indices..., sizeof...(Indices)> next;
+    };
 
-template <typename Tuple>
-typename IndicesBuilder<tuple_size<typename std::decay<Tuple>::type>::value>::type
-BuildIndices()
-{
-    return {};
-}
+    template <int Size>
+    struct IndicesBuilder
+    {
+        typedef typename IndicesBuilder<Size - 1>::type::next type;
+    };
 
+    template <>
+    struct IndicesBuilder<0>
+    {
+        typedef IndicesType<> type;
+    };
+
+    template <typename Tuple>
+    typename IndicesBuilder<tuple_size<typename std::decay<Tuple>::type>::value>::type
+    BuildIndices()
+    {
+        return {};
+    }
+
+} // namespace Instil
 #endif
