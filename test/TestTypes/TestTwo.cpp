@@ -7,6 +7,7 @@ using std::shared_ptr;
 
 TestTwo::TestTwo(shared_ptr<ITestOne>one)
 {
+    std::cout << "TestTwo::TestTwo" << std::endl;
     _one = one;
 }
 
@@ -23,5 +24,5 @@ void TestTwo::Call2()
 
 TestTwo::~TestTwo()
 {
-    
+    std::cout << "TestTwo::~TestTwo" << std::endl;
 }

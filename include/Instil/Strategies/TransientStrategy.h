@@ -4,7 +4,6 @@
 #include <tuple>
 #include <string>
 
-#include "../TypeInfo.h"
 #include "../IndicesBuilder.h"
 
 using std::get;

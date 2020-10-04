@@ -3,6 +3,7 @@
 
 enum Scope
 {
+    Undefined,
     Transient,
     Singleton,
     Named

@@ -8,7 +8,7 @@
 class TestOne : public ITestOne
 {
 public:
-    TestOne() {}
+    TestOne();
     void Call1() override;
     virtual ~TestOne();
 };

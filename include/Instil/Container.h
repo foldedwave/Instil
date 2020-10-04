@@ -7,7 +7,6 @@
 #include <functional>
 #include <tuple>
 
-#include "TypeInfo.h"
 #include "Strategies/SingletonStrategy.h"
 #include "Strategies/TransientStrategy.h"
 #include "Strategies/NamedScopeStrategy.h"
@@ -73,9 +72,15 @@ public:
 #ifdef STDOUT
         std::cout << "Container<I, T>::Register without args - " << TypeParseTraits<I>::name << std::endl;
 #endif
-
-        Container<I>::scope = scope;
-        Builder<I, T, decltype(empty)>::Register();
+        if(Container<I>::scope != Scope::Undefined)
+        {
+            throw;
+        }
+        else
+        {
+            Container<I>::scope = scope;
+            Builder<I, T, decltype(empty)>::Register();
+        }
     }
 };
 

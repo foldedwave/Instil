@@ -10,26 +10,19 @@
 #include "TestTypes/TestOne.h"
 #include "TestTypes/TestTwo.h"
 
-TEST(Container, TransientObjectWithSingletonChildrenContainIdenticalChildInstances)
+TEST(Container, SingletonObjectWithTransientChildrenAreIdenticalInstances)
 {
     auto testOne = Container<ITestTwo>::Get();
     auto testTwo = Container<ITestTwo>::Get();
 
+    EXPECT_EQ(testOne, testTwo);
     EXPECT_EQ(testOne->GetOne(), testTwo->GetOne());
-}
-
-TEST(Container, TransientObjectWithSingletonChildrenAreDifferentInstances)
-{
-    auto testOne = Container<ITestTwo>::Get();
-    auto testTwo = Container<ITestTwo>::Get();
-
-    EXPECT_NE(testOne, testTwo);
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Transient);
+    Container<ITestOne, TestOne>::Register(Scope::Transient);
+    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

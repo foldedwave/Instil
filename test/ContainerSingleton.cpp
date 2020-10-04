@@ -3,7 +3,6 @@
 #include <functional> // for __base, function
 
 #include "Instil/Container.h" // for Container, Container<>::build
-#include "Instil/TypeInfo.h"  // for REGISTER_PARSE_TYPE
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
 #include "TestTypes/ITestOne.h"
@@ -11,15 +10,8 @@
 #include "TestTypes/TestOne.h"
 #include "TestTypes/TestTwo.h"
 
-REGISTER_TYPE_INFO(ITestOne);
-REGISTER_TYPE_INFO(ITestTwo);
-REGISTER_TYPE_INFO(TestOne);
-REGISTER_TYPE_INFO(TestTwo);
-
 TEST(Container, SingletonRequestForSameObjectReturnsSameInstance)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestOne>::Get();
 
@@ -29,9 +21,6 @@ TEST(Container, SingletonRequestForSameObjectReturnsSameInstance)
 
 TEST(Container, SingletonRequestForObjectChildObjectsArePopulated)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
-
     auto testTwo = Container<ITestTwo>::Get();
 
     EXPECT_EQ(testTwo.use_count(), 2);
@@ -41,9 +30,6 @@ TEST(Container, SingletonRequestForObjectChildObjectsArePopulated)
 
 TEST(Container, SingletonRequestForSameObjectInHeirarchyReturnsSameInstance)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
-
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestTwo>::Get();
 
@@ -53,8 +39,17 @@ TEST(Container, SingletonRequestForSameObjectInHeirarchyReturnsSameInstance)
     EXPECT_EQ(testOne, testTwo->GetOne());
 }
 
+TEST(Container, SeeHowManyTimes)
+{
+    auto testOne = Container<ITestOne>::Get();
+    auto testTwo = Container<ITestOne>::Get();
+}
+
 int main(int argc, char **argv)
 {
+    Container<ITestOne, TestOne>::Register(Scope::Singleton);
+    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

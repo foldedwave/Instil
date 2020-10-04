@@ -31,6 +31,11 @@ target_link_libraries(ContainerMixed PRIVATE InstilLib)
 target_link_libraries(ContainerMixed PRIVATE gtest gmock)
 add_test(NAME ContainerMixed COMMAND ContainerMixed)
 
+add_executable(ContainerMixedPartTwo ContainerMixedPartTwo.cpp TestTypes/TestOne.cpp TestTypes/TestTwo.cpp)
+target_link_libraries(ContainerMixedPartTwo PRIVATE InstilLib)
+target_link_libraries(ContainerMixedPartTwo PRIVATE gtest gmock)
+add_test(NAME ContainerMixedPartTwo COMMAND ContainerMixedPartTwo)
+
 add_executable(ContainerNamedScope ContainerNamedScope.cpp TestTypes/TestOne.cpp TestTypes/TestTwo.cpp)
 target_link_libraries(ContainerNamedScope PRIVATE InstilLib)
 target_link_libraries(ContainerNamedScope PRIVATE gtest gmock)

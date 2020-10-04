@@ -5,7 +5,6 @@
 #include <string>
 #include <map>
 
-#include "../TypeInfo.h"
 #include "../IndicesBuilder.h"
 
 using std::get;
@@ -14,11 +13,23 @@ using std::string;
 using std::shared_ptr;
 using std::make_shared;
 
+template<typename T>
+class ObjectMap
+{
+    public:
+    static bool populated;
+    static std::shared_ptr<T> object;
+};
+
+template<class T>
+bool ObjectMap<T>::populated = false;
+
+template<class T>
+std::shared_ptr<T> ObjectMap<T>::object{};
+
 class SingletonStrategy
 {
 private:
-    static map<string, shared_ptr<void>> *objectMap;
-
     template <class T, typename Tuple, int... Indices>
     static shared_ptr<T> ApplyImpl(const Tuple &x, IndicesType<Indices...>);
 
@@ -27,22 +38,16 @@ public:
     static shared_ptr<T> Apply(const Tuple &x);
 };
 
-map<string, shared_ptr<void>> * SingletonStrategy::objectMap = new map<string, shared_ptr<void>>();
-
 template <class T, typename Tuple, int... Indices>
 shared_ptr<T> SingletonStrategy::ApplyImpl(const Tuple &x, IndicesType<Indices...>)
 {
-    auto typeName = TypeInfo<T>::name;
-    if (objectMap->find(typeName) == objectMap->end())
+    if(ObjectMap<T>::populated == false)
     {
-        auto obj = make_shared<T>(get<Indices>(x)...);
-        (*objectMap)[typeName] = obj;
-        return obj;
+        ObjectMap<T>::object = make_shared<T>(get<Indices>(x)...);
+        ObjectMap<T>::populated = true;
     }
-    else
-    {
-        return std::static_pointer_cast<T>(objectMap->at(typeName));
-    }
+
+    return ObjectMap<T>::object;
 }
 
 template <class T, typename Tuple>

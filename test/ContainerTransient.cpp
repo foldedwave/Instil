@@ -3,7 +3,6 @@
 #include <functional> // for __base, function
 
 #include "Instil/Container.h" // for Container, Container<>::build
-#include "Instil/TypeInfo.h"  // for REGISTER_PARSE_TYPE
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
 #include "TestTypes/ITestOne.h"
@@ -13,44 +12,34 @@
 
 #include <memory>
 
-REGISTER_TYPE_INFO(ITestOne);
-REGISTER_TYPE_INFO(ITestTwo);
-REGISTER_TYPE_INFO(TestOne);
-REGISTER_TYPE_INFO(TestTwo);
-
-TEST(Container, TransientRequestForSameObjectReturnsSameInstance)
+TEST(Container, TransientRequestForSameObjectReturnsDifferentInstance)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestOne>::Get();
 
-    EXPECT_EQ(testOne, testTwo);
+    EXPECT_NE(testOne, testTwo);
 }
 
 TEST(Container, TransientRequestForObjectChildObjectsArePopulated)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
-
     auto testTwo = Container<ITestTwo>::Get();
 
     EXPECT_TRUE(testTwo->GetOne() != nullptr);
 }
 
-TEST(Container, TransientRequestForSameObjectInHeirarchyReturnsSameInstance)
+TEST(Container, TransientRequestForSameObjectInHeirarchyReturnsDifferentInstance)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
-
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestTwo>::Get();
 
-    EXPECT_EQ(testOne, testTwo->GetOne());
+    EXPECT_NE(testOne, testTwo->GetOne());
 }
 
 int main(int argc, char **argv)
 {
+    Container<ITestOne, TestOne>::Register(Scope::Transient);
+    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Transient);
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
