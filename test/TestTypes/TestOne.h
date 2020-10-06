@@ -3,13 +3,13 @@
 
 #include "ITestOne.h"
 
-#include "gmock/gmock.h"
+#include <string>
 
 class TestOne : public ITestOne
 {
 public:
     TestOne();
-    void Call1() override;
+    std::string Call1() override;
     virtual ~TestOne();
 };
 

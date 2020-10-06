@@ -24,30 +24,68 @@ namespace Instil
     template <typename... Arguments>
     class Container;
 
+    template <class I>
+    class Container<std::vector<I>>
+    {
+        public:
+            static std::vector<shared_ptr<I>> Get(string scope);    // TODO implement scope
+    };
+
+    template <class I>
+    std::vector<shared_ptr<I>> Container<std::vector<I>>::Get(string scope)
+    {
+        return Container<I>::GetAll();
+    }
+
     // Specialization for retrieving from the container
     template <class I>
     class Container<I>
     {
+    private:
+        static std::vector<function<shared_ptr<I>(string)>> builders;
+    
     public:
-        static function<shared_ptr<I>(string)> build;
+        static void Add(function<std::shared_ptr<I>(string)> builder);
         static shared_ptr<I> Get();
         static shared_ptr<I> Get(string scope);
+        static std::vector<shared_ptr<I>> GetAll();
         static Scope scope;
     };
 
     template <class I>
-    function<shared_ptr<I>(string)> Container<I>::build;
+    std::vector<function<shared_ptr<I>(string)>> Container<I>::builders{};
 
+    template <class I>
+    void Container<I>::Add(function<std::shared_ptr<I>(string)> builder)
+    {
+        builders.push_back(builder);
+    }
+    
     template <class I>
     shared_ptr<I> Container<I>::Get()
     {
-        return build("");
+        return builders[0]("");
     }
 
     template <class I>
     shared_ptr<I> Container<I>::Get(string scope)
     {
-        return build(scope);
+        return builders[0](scope);
+    }
+
+    template <class I>
+    std::vector<shared_ptr<I>> Container<I>::GetAll()
+    {
+        std::vector<shared_ptr<I>> instances{};
+
+        for (auto builder : builders)
+        {
+            auto ptr = builder("");
+            
+            instances.push_back(ptr);
+        }
+
+        return instances;
     }
 
     template <class I>
@@ -75,15 +113,9 @@ namespace Instil
 #ifdef STDOUT
             std::cout << "Container<I, T>::Register without args - " << TypeParseTraits<I>::name << std::endl;
 #endif
-            if (Container<I>::scope != Scope::Undefined)
-            {
-                throw;
-            }
-            else
-            {
-                Container<I>::scope = scope;
-                Builder<I, T, decltype(empty)>::Register();
-            }
+
+            Container<I>::scope = scope;
+            Builder<I, T, decltype(empty)>::Register();
         }
     };
 

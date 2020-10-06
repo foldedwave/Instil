@@ -13,6 +13,15 @@
 using Instil::Container;
 using Instil::Scope;
 
+TEST(Container, ScopedObjectIsWellFormed)
+{
+    auto testOne = Container<ITestOne>::Get("TestScope");
+    auto testTwo = Container<ITestTwo>::Get("TestScope");
+
+    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
+    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+}
+
 TEST(Container, NamedScopeRequestForSameObjectReturnsSameInstance)
 {
     auto testOne = Container<ITestOne>::Get("TestScope");

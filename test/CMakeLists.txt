@@ -40,3 +40,13 @@ add_executable(ContainerNamedScope ContainerNamedScope.cpp TestTypes/TestOne.cpp
 target_link_libraries(ContainerNamedScope PRIVATE InstilLib)
 target_link_libraries(ContainerNamedScope PRIVATE gtest gmock)
 add_test(NAME ContainerNamedScope COMMAND ContainerNamedScope)
+
+add_executable(ContainerMultipleRegistration ContainerMultipleRegistration.cpp TestTypes/TestOne.cpp TestTypes/TestOneAlternate.cpp)
+target_link_libraries(ContainerMultipleRegistration PRIVATE InstilLib)
+target_link_libraries(ContainerMultipleRegistration PRIVATE gtest gmock)
+add_test(NAME ContainerMultipleRegistration COMMAND ContainerMultipleRegistration)
+
+add_executable(ContainerVectors ContainerVectors.cpp TestTypes/TestOne.cpp TestTypes/TestOneAlternate.cpp TestTypes/TestTwoAlternate.cpp)
+target_link_libraries(ContainerVectors PRIVATE InstilLib)
+target_link_libraries(ContainerVectors PRIVATE gtest gmock)
+add_test(NAME ContainerVectors COMMAND ContainerVectors)

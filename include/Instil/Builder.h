@@ -33,7 +33,7 @@ namespace Instil
             std::cout << "Display::Register Base Case, Completed for - " << TypeParseTraits<T>::name << std::endl;
 #endif
 
-            Container<I>::build = Builder<I, T, TupleArgs>::BuildInitial;
+            Container<I>::Add(Builder<I, T, TupleArgs>::BuildInitial);
         }
 
         // Entry point when the ctor has no args
@@ -78,7 +78,7 @@ namespace Instil
 #ifdef STDOUT
             std::cout << "Display::Register Getting parameter - " << TypeParseTraits<A>::name << std::endl;
 #endif
-            Container<I>::build = Builder<I, T, TupleArgs, A, Arguments...>::BuildInitial;
+            Container<I>::Add(Builder<I, T, TupleArgs, A, Arguments...>::BuildInitial);
         }
 
         // Entry point for building a tuple of args
@@ -94,7 +94,7 @@ namespace Instil
             std::cout << "Display::Out Getting parameter - " << TypeParseTraits<A>::name << std::endl;
 #endif
 
-            auto nextTuple = tuple_cat(args, make_tuple(Container<A>::build(scopeName)));
+            auto nextTuple = tuple_cat(args, make_tuple(Container<A>::Get(scopeName)));
 
             return Builder<I, T, decltype(nextTuple), Arguments...>::Build(scopeName, nextTuple);
         }

@@ -1,18 +1,19 @@
 #include "TestOne.h"
 
+#include <string>
 #include <iostream>
 
-void TestOne::Call1()
+std::string TestOne::Call1()
 {
-    std::cout << "Call1" << std::endl;
+    return "TestOne::Call1()";
 }
 
 TestOne::TestOne()
 {
-    std::cout << "TestOne::TestOne" << std::endl;
+    // std::cout << "TestOne::TestOne" << std::endl;
 }
 
 TestOne::~TestOne()
 {
-    std::cout << "TestOne::~TestOne" << std::endl;
+    // std::cout << "TestOne::~TestOne" << std::endl;
 }

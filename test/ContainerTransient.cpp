@@ -15,6 +15,16 @@
 using Instil::Container;
 using Instil::Scope;
 
+
+TEST(Container, TransientObjectIsWellFormed)
+{
+    auto testOne = Container<ITestOne>::Get();
+    auto testTwo = Container<ITestTwo>::Get();
+
+    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
+    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+}
+
 TEST(Container, TransientRequestForSameObjectReturnsDifferentInstance)
 {
     auto testOne = Container<ITestOne>::Get();

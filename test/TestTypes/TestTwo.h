@@ -3,7 +3,7 @@
 
 #include "ITestTwo.h"
 
-#include "gmock/gmock.h"
+#include <string>
 #include <memory>
 
 using std::shared_ptr;
@@ -18,7 +18,8 @@ private:
 public:
     TestTwo(shared_ptr<ITestOne> one);
     virtual shared_ptr<ITestOne> GetOne();
-    virtual void Call2();
+    virtual std::string Call1();
+    virtual std::string CallChild();
     virtual ~TestTwo();
 };
 

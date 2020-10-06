@@ -13,12 +13,43 @@
 using Instil::Container;
 using Instil::Scope;
 
+TEST(Container, SingletonFirstSingleObjectHasCorrectRefCount)
+{
+    auto testOne = Container<ITestOne>::Get();
+
+    EXPECT_EQ(testOne.use_count(), 2);
+}
+
+TEST(Container, SingletonFirstCompositeObjectHasCorrectRefCount)
+{
+    auto testTwo = Container<ITestTwo>::Get();
+
+    EXPECT_EQ(testTwo.use_count(), 2);
+    EXPECT_EQ(testTwo->GetOne().use_count(), 3);
+}
+
+TEST(Container, SingletonCompositeObjectRetainsReferenceEvenWhenNoneAreInScope)
+{
+    auto testOne = Container<ITestOne>::Get();
+
+    EXPECT_EQ(testOne.use_count(), 3);
+}
+
+TEST(Container, SingletonObjectIsWellFormed)
+{
+    auto testOne = Container<ITestOne>::Get();
+    auto testTwo = Container<ITestTwo>::Get();
+
+    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
+    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+}
+
 TEST(Container, SingletonRequestForSameObjectReturnsSameInstance)
 {
     auto testOne = Container<ITestOne>::Get();
     auto testTwo = Container<ITestOne>::Get();
 
-    EXPECT_EQ(testOne.use_count(), 3);
+    EXPECT_EQ(testOne.use_count(), 4);
     EXPECT_EQ(testOne, testTwo);
 }
 

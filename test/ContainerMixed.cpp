@@ -13,6 +13,15 @@
 using Instil::Container;
 using Instil::Scope;
 
+TEST(Container, MixedRegistrationObjectsAreWellFormed)
+{
+    auto testOne = Container<ITestOne>::Get();
+    auto testTwo = Container<ITestTwo>::Get();
+
+    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
+    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+}
+
 TEST(Container, TransientObjectWithSingletonChildrenContainIdenticalChildInstances)
 {
     auto testOne = Container<ITestTwo>::Get();
