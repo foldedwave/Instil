@@ -5,84 +5,84 @@
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
-#include "TestTypes/ITestOne.h"
-#include "TestTypes/ITestTwo.h"
-#include "TestTypes/TestOne.h"
-#include "TestTypes/TestTwo.h"
+#include "TestTypes/Interfaces/ISimple.h"
+#include "TestTypes/Interfaces/IWrapSingle.h"
+#include "TestTypes/Simple.h"
+#include "TestTypes/WrapSingle.h"
 
 using Instil::Container;
 using Instil::Scope;
 
 TEST(Container, SingletonFirstSingleObjectHasCorrectRefCount)
 {
-    auto testOne = Container<ITestOne>::Get();
+    auto simple = Container<ISimple>::Get();
 
-    EXPECT_EQ(testOne.use_count(), 2);
+    EXPECT_EQ(simple.use_count(), 2);
 }
 
 TEST(Container, SingletonFirstCompositeObjectHasCorrectRefCount)
 {
-    auto testTwo = Container<ITestTwo>::Get();
+    auto wrapSingle = Container<IWrapSingle>::Get();
 
-    EXPECT_EQ(testTwo.use_count(), 2);
-    EXPECT_EQ(testTwo->GetOne().use_count(), 3);
+    EXPECT_EQ(wrapSingle.use_count(), 2);
+    EXPECT_EQ(wrapSingle->GetSingle().use_count(), 3);
 }
 
 TEST(Container, SingletonCompositeObjectRetainsReferenceEvenWhenNoneAreInScope)
 {
-    auto testOne = Container<ITestOne>::Get();
+    auto simple = Container<ISimple>::Get();
 
-    EXPECT_EQ(testOne.use_count(), 3);
+    EXPECT_EQ(simple.use_count(), 3);
 }
 
 TEST(Container, SingletonObjectIsWellFormed)
 {
-    auto testOne = Container<ITestOne>::Get();
-    auto testTwo = Container<ITestTwo>::Get();
+    auto simple = Container<ISimple>::Get();
+    auto wrapSingle = Container<IWrapSingle>::Get();
 
-    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
-    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+    EXPECT_EQ(simple->Call(), "Simple::Call()");
+    EXPECT_EQ(wrapSingle->Call(), "WrapSingle::Call()");
 }
 
 TEST(Container, SingletonRequestForSameObjectReturnsSameInstance)
 {
-    auto testOne = Container<ITestOne>::Get();
-    auto testTwo = Container<ITestOne>::Get();
+    auto simple1 = Container<ISimple>::Get();
+    auto simple2 = Container<ISimple>::Get();
 
-    EXPECT_EQ(testOne.use_count(), 4);
-    EXPECT_EQ(testOne, testTwo);
+    EXPECT_EQ(simple1.use_count(), 4);
+    EXPECT_EQ(simple1, simple2);
 }
 
 TEST(Container, SingletonRequestForObjectChildObjectsArePopulated)
 {
-    auto testTwo = Container<ITestTwo>::Get();
+    auto wrapSingle = Container<IWrapSingle>::Get();
 
-    EXPECT_EQ(testTwo.use_count(), 2);
-    EXPECT_EQ(testTwo->GetOne().use_count(), 3);
-    EXPECT_TRUE(testTwo->GetOne() != nullptr);
+    EXPECT_EQ(wrapSingle.use_count(), 2);
+    EXPECT_EQ(wrapSingle->GetSingle().use_count(), 3);
+    EXPECT_TRUE(wrapSingle->GetSingle() != nullptr);
 }
 
 TEST(Container, SingletonRequestForSameObjectInHeirarchyReturnsSameInstance)
 {
-    auto testOne = Container<ITestOne>::Get();
-    auto testTwo = Container<ITestTwo>::Get();
+    auto simple = Container<ISimple>::Get();
+    auto wrapSingle = Container<IWrapSingle>::Get();
 
-    EXPECT_EQ(testOne.use_count(), 3);
-    EXPECT_EQ(testTwo->GetOne().use_count(), 4);
-    EXPECT_EQ(testTwo.use_count(), 2);
-    EXPECT_EQ(testOne, testTwo->GetOne());
+    EXPECT_EQ(simple.use_count(), 3);
+    EXPECT_EQ(wrapSingle->GetSingle().use_count(), 4);
+    EXPECT_EQ(wrapSingle.use_count(), 2);
+    EXPECT_EQ(simple, wrapSingle->GetSingle());
 }
 
 TEST(Container, SeeHowManyTimes)
 {
-    auto testOne = Container<ITestOne>::Get();
-    auto testTwo = Container<ITestOne>::Get();
+    auto simple1 = Container<ISimple>::Get();
+    auto simple2 = Container<ISimple>::Get();
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
+    Container<ISimple, Simple>::Register(Scope::Singleton);
+    Container<IWrapSingle, WrapSingle, ISimple>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

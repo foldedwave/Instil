@@ -5,27 +5,27 @@
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
-#include "TestTypes/ITestOne.h"
-#include "TestTypes/ITestTwo.h"
-#include "TestTypes/TestOne.h"
-#include "TestTypes/TestTwo.h"
+#include "TestTypes/Interfaces/ISimple.h"
+#include "TestTypes/Interfaces/IWrapSingle.h"
+#include "TestTypes/Simple.h"
+#include "TestTypes/WrapSingle.h"
 
 using Instil::Container;
 using Instil::Scope;
 
 TEST(Container, SingletonObjectWithTransientChildrenAreIdenticalInstances)
 {
-    auto testOne = Container<ITestTwo>::Get();
-    auto testTwo = Container<ITestTwo>::Get();
+    auto wrapSingle1 = Container<IWrapSingle>::Get();
+    auto wrapSingle2 = Container<IWrapSingle>::Get();
 
-    EXPECT_EQ(testOne, testTwo);
-    EXPECT_EQ(testOne->GetOne(), testTwo->GetOne());
+    EXPECT_EQ(wrapSingle1, wrapSingle2);
+    EXPECT_EQ(wrapSingle1->GetSingle(), wrapSingle2->GetSingle());
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Transient);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Singleton);
+    Container<ISimple, Simple>::Register(Scope::Transient);
+    Container<IWrapSingle, WrapSingle, ISimple>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

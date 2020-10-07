@@ -1,0 +1,16 @@
+#ifndef SIMPLE_H
+#define SIMPLE_H
+
+#include "Interfaces/ISimple.h"
+
+#include <string>
+
+class Simple : public ISimple
+{
+public:
+    Simple();
+    std::string Call() override;
+    virtual ~Simple();
+};
+
+#endif

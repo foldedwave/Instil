@@ -5,42 +5,42 @@
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
-#include "TestTypes/ITestOne.h"
-#include "TestTypes/ITestTwoAlternate.h"
-#include "TestTypes/TestOne.h"
-#include "TestTypes/TestOneAlternate.h"
-#include "TestTypes/TestTwoAlternate.h"
+#include "TestTypes/Interfaces/ISimple.h"
+#include "TestTypes/Interfaces/IWrapMultiple.h"
+#include "TestTypes/Simple.h"
+#include "TestTypes/SimpleAlternate.h"
+#include "TestTypes/WrapMultiple.h"
 
 using Instil::Container;
 using Instil::Scope;
 
 TEST(Container, VectorCtorParametersAreConstructable)
 {
-    EXPECT_NO_THROW(Container<ITestTwoAlternate>::Get());
+    EXPECT_NO_THROW(Container<IWrapMultiple>::Get());
 }
 
 TEST(Container, VectorContainsCorrectObjects)
 {
-    auto testTwo = Container<ITestTwoAlternate>::Get();
+    auto wrapMulti = Container<IWrapMultiple>::Get();
 
-    EXPECT_EQ(testTwo->Call1(), "TestTwoAlternate::Call1()");
-    EXPECT_EQ(testTwo->CallChild(), "TestOne::Call1()/TestOneAlternate::Call1()/");
+    EXPECT_EQ(wrapMulti->Call(), "WrapMultiple::Call()");
+    EXPECT_EQ(wrapMulti->CallChildren(), "Simple::Call()/SimpleAlternate::Call()/");
 }
 
 TEST(Container, VectorObjectReferenceCountsAreCorrect)
 {
-    auto testTwo = Container<ITestTwoAlternate>::Get();
+    auto wrapMulti = Container<IWrapMultiple>::Get();
 
-    EXPECT_EQ(testTwo.use_count(), 2);
-    EXPECT_EQ(testTwo->GetOne()[0].use_count(), 3);
-    EXPECT_EQ(testTwo->GetOne()[1].use_count(), 3);
+    EXPECT_EQ(wrapMulti.use_count(), 2);
+    EXPECT_EQ(wrapMulti->GetAll()[0].use_count(), 3);
+    EXPECT_EQ(wrapMulti->GetAll()[1].use_count(), 3);
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestOne, TestOneAlternate>::Register(Scope::Singleton);
-    Container<ITestTwoAlternate, TestTwoAlternate, std::vector<ITestOne>>::Register(Scope::Singleton);
+    Container<ISimple, Simple>::Register(Scope::Singleton);
+    Container<ISimple, SimpleAlternate>::Register(Scope::Singleton);
+    Container<IWrapMultiple, WrapMultiple, std::vector<ISimple>>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -5,9 +5,9 @@
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
-#include "TestTypes/ITestOne.h"
-#include "TestTypes/TestOne.h"
-#include "TestTypes/TestOneAlternate.h"
+#include "TestTypes/Interfaces/ISimple.h"
+#include "TestTypes/Simple.h"
+#include "TestTypes/SimpleAlternate.h"
 
 #include <memory>
 
@@ -17,34 +17,34 @@ using Instil::Scope;
 
 TEST(Container, MultipleRegistrationObjectsAreWellFormed)
 {
-    auto testAllOnes = Container<ITestOne>::GetAll();
+    auto simpleCollection = Container<ISimple>::GetAll();
 
-    EXPECT_EQ(testAllOnes.at(0)->Call1(), "TestOne::Call1()");
-    EXPECT_EQ(testAllOnes.at(1)->Call1(), "TestOneAlternate::Call1()");
+    EXPECT_EQ(simpleCollection[0]->Call(), "Simple::Call()");
+    EXPECT_EQ(simpleCollection[1]->Call(), "SimpleAlternate::Call()");
 }
 
 TEST(Container, MultipleRegistrationDefaultGetReturnsSameInstance)
 {
-    auto testOne = Container<ITestOne>::Get();
-    auto testTwo = Container<ITestOne>::Get();
+    auto simple1 = Container<ISimple>::Get();
+    auto simple2 = Container<ISimple>::Get();
 
-    EXPECT_EQ(testOne, testTwo);
+    EXPECT_EQ(simple1, simple2);
 }
 
 TEST(Container, MultipleRegistrationGetAllReturnsAllInstances)
 {
-    auto testAllOnes = Container<ITestOne>::GetAll();
+    auto simpleCollection = Container<ISimple>::GetAll();
 
-    testAllOnes.at(0)->Call1();
-    testAllOnes.at(1)->Call1();
+    simpleCollection[0]->Call();
+    simpleCollection[1]->Call();
 
-    EXPECT_EQ(testAllOnes.size(), 2);
+    EXPECT_EQ(simpleCollection.size(), 2);
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Singleton);
-    Container<ITestOne, TestOneAlternate>::Register(Scope::Singleton);
+    Container<ISimple, Simple>::Register(Scope::Singleton);
+    Container<ISimple, SimpleAlternate>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -5,51 +5,51 @@
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
 
-#include "TestTypes/ITestOne.h"
-#include "TestTypes/ITestTwo.h"
-#include "TestTypes/TestOne.h"
-#include "TestTypes/TestTwo.h"
+#include "TestTypes/Interfaces/ISimple.h"
+#include "TestTypes/Interfaces/IWrapSingle.h"
+#include "TestTypes/Simple.h"
+#include "TestTypes/WrapSingle.h"
 
 using Instil::Container;
 using Instil::Scope;
 
 TEST(Container, ScopedObjectIsWellFormed)
 {
-    auto testOne = Container<ITestOne>::Get("TestScope");
-    auto testTwo = Container<ITestTwo>::Get("TestScope");
+    auto simple = Container<ISimple>::Get("TestScope");
+    auto wrapSingle = Container<IWrapSingle>::Get("TestScope");
 
-    EXPECT_EQ(testOne->Call1(), "TestOne::Call1()");
-    EXPECT_EQ(testTwo->Call1(), "TestTwo::Call1()");
+    EXPECT_EQ(simple->Call(), "Simple::Call()");
+    EXPECT_EQ(wrapSingle->Call(), "WrapSingle::Call()");
 }
 
 TEST(Container, NamedScopeRequestForSameObjectReturnsSameInstance)
 {
-    auto testOne = Container<ITestOne>::Get("TestScope");
-    auto testTwo = Container<ITestOne>::Get("TestScope");
+    auto simple1 = Container<ISimple>::Get("TestScope");
+    auto simple2 = Container<ISimple>::Get("TestScope");
 
-    EXPECT_EQ(testOne, testTwo);
+    EXPECT_EQ(simple1, simple2);
 }
 
 TEST(Container, NamedScopeRequestForSameObjectDifferentScopeReturnsDifferentInstance)
 {
-    auto testOne = Container<ITestOne>::Get("TestScope1");
-    auto testTwo = Container<ITestOne>::Get("TestScope2");
+    auto simple1 = Container<ISimple>::Get("TestScope1");
+    auto simple2 = Container<ISimple>::Get("TestScope2");
 
-    EXPECT_NE(testOne, testTwo);
+    EXPECT_NE(simple1, simple2);
 }
 
 TEST(Container, NamedScopeRequestForSameObjectDifferentScopeInHeirarchyReturnsDifferentInstance)
 {
-    auto testOne = Container<ITestOne>::Get("TestScope1");
-    auto testTwo = Container<ITestTwo>::Get("TestScope2");
+    auto simple = Container<ISimple>::Get("TestScope1");
+    auto wrapSingle = Container<IWrapSingle>::Get("TestScope2");
 
-    EXPECT_NE(testOne, testTwo->GetOne());
+    EXPECT_NE(simple, wrapSingle->GetSingle());
 }
 
 int main(int argc, char **argv)
 {
-    Container<ITestOne, TestOne>::Register(Scope::Named);
-    Container<ITestTwo, TestTwo, ITestOne>::Register(Scope::Named);
+    Container<ISimple, Simple>::Register(Scope::Named);
+    Container<IWrapSingle, WrapSingle, ISimple>::Register(Scope::Named);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
