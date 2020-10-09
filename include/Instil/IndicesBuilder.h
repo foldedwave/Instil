@@ -5,7 +5,6 @@
 
 namespace Instil
 {
-
     using std::tuple_size;
 
     template <int... Indices>

@@ -56,7 +56,7 @@ namespace Instil
     template <class T, typename Tuple>
     shared_ptr<T> SingletonStrategy::Apply(const Tuple &x)
     {
-        return shared_ptr<T>(ApplyImpl<T>(x, BuildIndices<Tuple>()));
+        return ApplyImpl<T>(x, BuildIndices<Tuple>());
     }
 
 } // namespace Instil

@@ -3,7 +3,6 @@
 
 namespace Instil
 {
-
     enum Scope
     {
         Undefined,
@@ -11,6 +10,5 @@ namespace Instil
         Singleton,
         Named
     };
-
 }
 #endif

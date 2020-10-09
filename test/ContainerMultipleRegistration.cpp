@@ -14,10 +14,9 @@
 using Instil::Container;
 using Instil::Scope;
 
-
 TEST(Container, MultipleRegistrationObjectsAreWellFormed)
 {
-    auto simpleCollection = Container<ISimple>::GetAll();
+    auto simpleCollection = Container<std::shared_ptr<ISimple>>::GetAll();
 
     EXPECT_EQ(simpleCollection[0]->Call(), "Simple::Call()");
     EXPECT_EQ(simpleCollection[1]->Call(), "SimpleAlternate::Call()");
@@ -25,15 +24,15 @@ TEST(Container, MultipleRegistrationObjectsAreWellFormed)
 
 TEST(Container, MultipleRegistrationDefaultGetReturnsSameInstance)
 {
-    auto simple1 = Container<ISimple>::Get();
-    auto simple2 = Container<ISimple>::Get();
+    auto simple1 = Container<std::shared_ptr<ISimple>>::Get();
+    auto simple2 = Container<std::shared_ptr<ISimple>>::Get();
 
     EXPECT_EQ(simple1, simple2);
 }
 
 TEST(Container, MultipleRegistrationGetAllReturnsAllInstances)
 {
-    auto simpleCollection = Container<ISimple>::GetAll();
+    auto simpleCollection = Container<std::shared_ptr<ISimple>>::GetAll();
 
     simpleCollection[0]->Call();
     simpleCollection[1]->Call();
@@ -43,8 +42,8 @@ TEST(Container, MultipleRegistrationGetAllReturnsAllInstances)
 
 int main(int argc, char **argv)
 {
-    Container<ISimple, Simple>::Register(Scope::Singleton);
-    Container<ISimple, SimpleAlternate>::Register(Scope::Singleton);
+    Container<std::shared_ptr<ISimple>>::For<std::shared_ptr<Simple>>::Register(Scope::Singleton);
+    Container<std::shared_ptr<ISimple>>::For<std::shared_ptr<SimpleAlternate>>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -2,10 +2,11 @@
 #define SIMPLE_H
 
 #include "Interfaces/ISimple.h"
+#include "Interfaces/ISimple2.h"
 
 #include <string>
 
-class Simple : public ISimple
+class Simple : public ISimple, public ISimple2
 {
 public:
     Simple();
