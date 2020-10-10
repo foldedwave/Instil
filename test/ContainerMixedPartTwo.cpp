@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <functional> // for __base, function
+#include <memory>     // for shared_ptr
+#include <string>     // for operator==
 
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient
@@ -22,14 +24,13 @@ TEST(Container, SingletonObjectWithTransientChildrenAreIdenticalInstances)
     EXPECT_EQ(wrapSingle1->GetSingle(), wrapSingle2->GetSingle());
 }
 
-
 TEST(Container, TransientAndSingletonRegisteredSameClassesCreatesDifferentInstances)
 {
     auto simple1 = Container<ISimple>::Get();
     auto simple2 = Container<ISimple2>::Get();
 
-    void* v1 = simple1.get();
-    void* v2 = simple2.get();
+    void *v1 = simple1.get();
+    void *v2 = simple2.get();
 
     EXPECT_NE(v1, v2);
 }

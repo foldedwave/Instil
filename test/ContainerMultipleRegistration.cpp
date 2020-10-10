@@ -10,6 +10,8 @@
 #include "TestTypes/SimpleAlternate.h"
 
 #include <memory>
+#include <string>                          // for operator==
+#include <vector>                          // for vector
 
 using Instil::Container;
 using Instil::Scope;

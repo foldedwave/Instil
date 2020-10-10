@@ -86,8 +86,8 @@ TEST(Container, SeeHowManyTimes)
 
 int main(int argc, char **argv)
 {
-    Container<ISimple>::For<Simple>::Register(Scope::Singleton);
-    Container<ISimple2>::For<Simple>::Register(Scope::Singleton);
+    Container<ISimple>::For<Simple>::Register(Scope::Singleton, "ISimple");
+    Container<ISimple2>::For<Simple>::Register(Scope::Singleton, "ISimple2");
     Container<IWrapSingle>::For<WrapSingle, ISimple>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
