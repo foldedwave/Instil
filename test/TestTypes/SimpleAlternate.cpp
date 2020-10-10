@@ -1,7 +1,6 @@
 #include "SimpleAlternate.h"
 
 #include <string>
-#include <iostream>
 
 std::string SimpleAlternate::Call()
 {

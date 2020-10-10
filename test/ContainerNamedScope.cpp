@@ -15,8 +15,8 @@ using Instil::Scope;
 
 TEST(Container, ScopedObjectIsWellFormed)
 {
-    auto simple = Container<std::shared_ptr<ISimple>>::Get("TestScope");
-    auto wrapSingle = Container<std::shared_ptr<IWrapSingle>>::Get("TestScope");
+    auto simple = Container<ISimple>::Get("TestScope");
+    auto wrapSingle = Container<IWrapSingle>::Get("TestScope");
 
     EXPECT_EQ(simple->Call(), "Simple::Call()");
     EXPECT_EQ(wrapSingle->Call(), "WrapSingle::Call()");
@@ -24,32 +24,32 @@ TEST(Container, ScopedObjectIsWellFormed)
 
 TEST(Container, NamedScopeRequestForSameObjectReturnsSameInstance)
 {
-    auto simple1 = Container<std::shared_ptr<ISimple>>::Get("TestScope");
-    auto simple2 = Container<std::shared_ptr<ISimple>>::Get("TestScope");
+    auto simple1 = Container<ISimple>::Get("TestScope");
+    auto simple2 = Container<ISimple>::Get("TestScope");
 
     EXPECT_EQ(simple1, simple2);
 }
 
 TEST(Container, NamedScopeRequestForSameObjectDifferentScopeReturnsDifferentInstance)
 {
-    auto simple1 = Container<std::shared_ptr<ISimple>>::Get("TestScope1");
-    auto simple2 = Container<std::shared_ptr<ISimple>>::Get("TestScope2");
+    auto simple1 = Container<ISimple>::Get("TestScope1");
+    auto simple2 = Container<ISimple>::Get("TestScope2");
 
     EXPECT_NE(simple1, simple2);
 }
 
 TEST(Container, NamedScopeRequestForSameObjectDifferentScopeInHeirarchyReturnsDifferentInstance)
 {
-    auto simple = Container<std::shared_ptr<ISimple>>::Get("TestScope1");
-    auto wrapSingle = Container<std::shared_ptr<IWrapSingle>>::Get("TestScope2");
+    auto simple = Container<ISimple>::Get("TestScope1");
+    auto wrapSingle = Container<IWrapSingle>::Get("TestScope2");
 
     EXPECT_NE(simple, wrapSingle->GetSingle());
 }
 
 int main(int argc, char **argv)
 {
-    Container<std::shared_ptr<ISimple>>::For<std::shared_ptr<Simple>>::Register(Scope::Named);
-    Container<std::shared_ptr<IWrapSingle>>::For<std::shared_ptr<WrapSingle>, std::shared_ptr<ISimple>>::Register(Scope::Named);
+    Container<ISimple>::For<Simple>::Register(Scope::Named);
+    Container<IWrapSingle>::For<WrapSingle, ISimple>::Register(Scope::Named);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

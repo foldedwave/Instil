@@ -36,7 +36,7 @@ namespace Instil
     class Builder<T, TupleArgs>
     {
     public:
-        static function<T(Scope, string)> Register()
+        static function<shared_ptr<T>(Scope, string)> Register()
         {
 #ifdef DEBUGINSTIL
             std::cout << "---------------------------------------------------" << std::endl;
@@ -50,13 +50,13 @@ namespace Instil
         }
 
         // Entry point when the ctor has no args
-        static T BuildInitial(Scope scope, string scopeName)
+        static shared_ptr<T> BuildInitial(Scope scope, string scopeName)
         {
             return Build(scope, scopeName, std::make_tuple<>());
         }
 
         // Argument tuple is complete, pass in to relevant apply function
-        static T Build(Scope scope, string scopeName, TupleArgs args)
+        static shared_ptr<T> Build(Scope scope, string scopeName, TupleArgs args)
         {
 #ifdef DEBUGINSTIL
             std::cout << "---------------------------------------------------" << std::endl;
@@ -70,15 +70,15 @@ namespace Instil
 
             if (scope == Scope::Singleton)
             {
-                 return SingletonStrategy::Apply<typename T::element_type>(args);
+                 return SingletonStrategy::Apply<T>(args);
             }
             else if (scope == Scope::Transient)
             {
-                return TransientStrategy::Apply<typename T::element_type>(args);
+                return TransientStrategy::Apply<T>(args);
             }
             else if (scope == Scope::Named)
             {
-                return NamedScopeStrategy::Apply<typename T::element_type>(scopeName, args);
+                return NamedScopeStrategy::Apply<T>(scopeName, args);
             }
             else
             {
@@ -93,7 +93,7 @@ namespace Instil
     class Builder<T, TupleArgs, A, Arguments...>
     {
     public:
-        static function<T(Scope, string)> Register()
+        static function<shared_ptr<T>(Scope, string)> Register()
         {
 #ifdef DEBUGINSTIL
             std::cout << "---------------------------------------------------" << std::endl;
@@ -107,13 +107,13 @@ namespace Instil
         }
 
         // Entry point for building a tuple of args
-        static T BuildInitial(Scope scope, string scopeName)
+        static shared_ptr<T> BuildInitial(Scope scope, string scopeName)
         {
             return Build(scope, scopeName, std::make_tuple<>());
         }
 
         // Add the next argument to the tuple
-        static T Build(Scope scope, string scopeName, TupleArgs args)
+        static shared_ptr<T> Build(Scope scope, string scopeName, TupleArgs args)
         {
             auto nextTuple = std::tuple_cat(args, std::make_tuple(Container<A>::Get(scopeName)));
 

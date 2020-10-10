@@ -6,6 +6,7 @@
 #endif
 #include <functional>
 #include <tuple>
+#include <memory>
 
 #include "Strategies/SingletonStrategy.h"
 #include "Strategies/TransientStrategy.h"
@@ -18,6 +19,7 @@ using std::vector;
 using std::pair;
 using std::tuple;
 using std::function;
+using std::shared_ptr;
 
 #ifdef DEBUGINSTIL
 #include <iostream>
@@ -39,11 +41,11 @@ namespace Instil
     class Container<vector<I>>
     {
     public:
-        static vector<I> Get(string scope); // TODO implement scope
+        static vector<shared_ptr<I>> Get(string scope); // TODO implement scope
     };
 
     template <class I>
-    vector<I> Container<vector<I>>::Get(string scope)
+    vector<shared_ptr<I>> Container<vector<I>>::Get(string scope)
     {
         return Container<I>::GetAll();
     }
@@ -53,13 +55,13 @@ namespace Instil
     class Container<I>
     {
     private:
-        static vector<pair<function<I(Scope, string)>, Scope>> builders;
+        static vector<pair<function<shared_ptr<I>(Scope, string)>, Scope>> builders;
 
     public:
-        static void Add(pair<function<I(Scope, string)>, Scope> builder);
-        static I Get();
-        static I Get(string scope);
-        static vector<I> GetAll();
+        static void Add(pair<function<shared_ptr<I>(Scope, string)>, Scope> builder);
+        static shared_ptr<I> Get();
+        static shared_ptr<I> Get(string scope);
+        static vector<shared_ptr<I>> GetAll();
 
     public:
         const tuple<> empty = std::make_tuple<>();
@@ -91,7 +93,7 @@ namespace Instil
         class For<T>
         {
         public:
-            static vector<pair<function<I(string)>, Scope>> builders;
+            static vector<pair<function<shared_ptr<I>(Scope, string)>, Scope>> builders;
 
             static void Register(Scope scope)
             {
@@ -109,30 +111,30 @@ namespace Instil
     };
 
     template <class I>
-    vector<pair<function<I(Scope, string)>, Scope>> Container<I>::builders{};
+    vector<pair<function<shared_ptr<I>(Scope, string)>, Scope>> Container<I>::builders{};
 
     template <class I>
-    void Container<I>::Add(pair<function<I(Scope, string)>, Scope> builder)
+    void Container<I>::Add(pair<function<shared_ptr<I>(Scope, string)>, Scope> builder)
     {
         builders.push_back(builder);
     }
 
     template <class I>
-    I Container<I>::Get()
+    shared_ptr<I> Container<I>::Get()
     {
         return builders[0].first(builders[0].second, "");
     }
 
     template <class I>
-    I Container<I>::Get(string scope)
+    shared_ptr<I> Container<I>::Get(string scope)
     {
         return builders[0].first(builders[0].second, scope);
     }
 
     template <class I>
-    vector<I> Container<I>::GetAll()
+    vector<shared_ptr<I>> Container<I>::GetAll()
     {
-        vector<I> instances{};
+        vector<shared_ptr<I>> instances{};
 
         for (auto builder : builders)
         {

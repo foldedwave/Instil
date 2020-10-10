@@ -12,6 +12,7 @@ public:
     Simple();
     std::string Call() override;
     virtual ~Simple();
+    const std::string Name = "Simple";
 };
 
 #endif

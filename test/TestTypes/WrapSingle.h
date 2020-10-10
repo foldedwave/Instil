@@ -21,6 +21,7 @@ public:
     virtual std::string Call();
     virtual std::string CallChild();
     virtual ~WrapSingle();
+    const std::string Name = "WrapSingle";
 };
 
 #endif
