@@ -21,6 +21,7 @@ public:
     virtual std::string Call();
     virtual std::string CallChildren();
     virtual ~WrapMultiple();
+    const std::string Name = "WrapMultiple";
 };
 
 #endif

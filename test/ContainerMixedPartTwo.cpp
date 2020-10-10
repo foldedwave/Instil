@@ -15,8 +15,8 @@ using Instil::Scope;
 
 TEST(Container, SingletonObjectWithTransientChildrenAreIdenticalInstances)
 {
-    auto wrapSingle1 = Container<std::shared_ptr<IWrapSingle>>::Get();
-    auto wrapSingle2 = Container<std::shared_ptr<IWrapSingle>>::Get();
+    auto wrapSingle1 = Container<IWrapSingle>::Get();
+    auto wrapSingle2 = Container<IWrapSingle>::Get();
 
     EXPECT_EQ(wrapSingle1, wrapSingle2);
     EXPECT_EQ(wrapSingle1->GetSingle(), wrapSingle2->GetSingle());
@@ -25,8 +25,8 @@ TEST(Container, SingletonObjectWithTransientChildrenAreIdenticalInstances)
 
 TEST(Container, TransientAndSingletonRegisteredSameClassesCreatesDifferentInstances)
 {
-    auto simple1 = Container<std::shared_ptr<ISimple>>::Get();
-    auto simple2 = Container<std::shared_ptr<ISimple2>>::Get();
+    auto simple1 = Container<ISimple>::Get();
+    auto simple2 = Container<ISimple2>::Get();
 
     void* v1 = simple1.get();
     void* v2 = simple2.get();
@@ -36,9 +36,9 @@ TEST(Container, TransientAndSingletonRegisteredSameClassesCreatesDifferentInstan
 
 int main(int argc, char **argv)
 {
-    Container<std::shared_ptr<ISimple>>::For<std::shared_ptr<Simple>>::Register(Scope::Transient);
-    Container<std::shared_ptr<ISimple2>>::For<std::shared_ptr<Simple>>::Register(Scope::Singleton);
-    Container<std::shared_ptr<IWrapSingle>>::For<std::shared_ptr<WrapSingle>, std::shared_ptr<ISimple>>::Register(Scope::Singleton);
+    Container<ISimple>::For<Simple>::Register(Scope::Transient);
+    Container<ISimple2>::For<Simple>::Register(Scope::Singleton);
+    Container<IWrapSingle>::For<WrapSingle, ISimple>::Register(Scope::Singleton);
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

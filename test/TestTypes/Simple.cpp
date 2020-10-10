@@ -1,7 +1,6 @@
 #include "Simple.h"
 
 #include <string>
-#include <iostream>
 
 std::string Simple::Call()
 {

@@ -11,6 +11,7 @@ public:
     SimpleAlternate();
     std::string Call() override;
     virtual ~SimpleAlternate();
+    const std::string Name = "SimpleAlternate";
 };
 
 #endif
