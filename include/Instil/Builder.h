@@ -98,6 +98,9 @@ namespace Instil
     template <class T, class TupleArgs, class A, typename... Arguments>
     class Builder<T, TupleArgs, A, Arguments...>
     {
+        template <typename...>
+        friend class Builder;
+
     public:
         static function<shared_ptr<T>(Scope, string)> Register()
         {
