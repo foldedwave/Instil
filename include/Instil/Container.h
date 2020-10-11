@@ -32,18 +32,6 @@ using std::shared_ptr;
 
 namespace Instil
 {
-    template<class I>
-    struct BuilderInfo
-    {
-    public:
-        BuilderInfo(string name, Scope scope, function<shared_ptr<I>(Scope, string)> builder) 
-            : name(name), scope(scope), builder(builder){}
-
-        string name = "";
-        Scope scope = Scope::Undefined;
-        function<shared_ptr<I>(Scope, string)> builder;
-    };
-
     // Forward declaration
     template <typename... Arguments>
     class Container;
@@ -81,19 +69,31 @@ namespace Instil
     class Container<I>
     {
     private:
-        static vector<BuilderInfo<I>> builders;
+        struct BuilderInfo
+        {
+        public:
+            BuilderInfo(string name, Scope scope, function<shared_ptr<I>(Scope, string)> builder) 
+                : name(name), scope(scope), builder(builder){}
+
+            string name = "";
+            Scope scope = Scope::Undefined;
+            function<shared_ptr<I>(Scope, string)> builder;
+        };
+        
+    private:
+        static vector<BuilderInfo> builders;
         static bool areAllNamed;
 
+    private:
+        static void Add(BuilderInfo builder);
+
     public:
-        static void Add(BuilderInfo<I> builder);
         static shared_ptr<I> Get(string scopeName = "");
         static shared_ptr<I> GetNamed(string name, string scopeName = "");
         static vector<shared_ptr<I>> GetAll(string scopeName = "");
         static map<string, shared_ptr<I>> GetAllAsMap(string scopeName = "");
 
     public:
-        const tuple<> empty = std::make_tuple<>();
-
         template <typename... Arguments>
         class For;
 
@@ -112,16 +112,17 @@ namespace Instil
                 std::cout << "---------------------------------------------------" << std::endl;
 #endif
 
-                Container<I>::Add(BuilderInfo<I>(name, scope, Builder<T, decltype(empty), Arguments...>::Register()));    // TODO supply name of builder
+                Container<I>::Add(Container<I>::BuilderInfo(name, scope, Builder<T, std::tuple<>, Arguments...>::Register()));    // TODO supply name of builder
             }
         };
 
         template <class T>
         class For<T>
         {
-        public:
+        private:
             static vector<pair<function<shared_ptr<I>(Scope, string)>, Scope>> builders;
 
+        public:
             static void Register(Scope scope, string name = "")
             {
 #ifdef DEBUGINSTIL
@@ -132,19 +133,19 @@ namespace Instil
                 std::cout << "---------------------------------------------------" << std::endl;
 #endif
 
-                Container<I>::Add(BuilderInfo<I>(name, scope, Builder<T, decltype(empty)>::Register()));  // TODO name of builder
+                Container<I>::Add(Container<I>::BuilderInfo(name, scope, Builder<T, std::tuple<>>::Register()));  // TODO name of builder
             }
         };
     };
 
     template <class I>
-    vector<BuilderInfo<I>> Container<I>::builders{};
+    vector<typename Container<I>::BuilderInfo> Container<I>::builders{};
 
     template <class I>
     bool Container<I>::areAllNamed = true;
 
     template <class I> 
-    void Container<I>::Add(BuilderInfo<I> builder)
+    void Container<I>::Add(BuilderInfo builder)
     {
         if(builder.name == "")
         {

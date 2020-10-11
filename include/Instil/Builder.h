@@ -11,16 +11,17 @@
 #include <tuple>
 #include <utility>
 
-using std::string;
 using std::function;
+using std::string;
 
 #ifdef DEBUGINSTIL
+#define ADDLOGGERS
 #include <iostream>
 #include "Unmangle.h"
 
-#define LogVal(X)   std::cout << #X << " - " << X << std::endl;
-#define Log(X)      std::cout << #X << " - " << unmangle(typeid(X).name()) << std::endl;
-#define LogPack(X)  std::cout << #X << " - " << unmangle(typeid(std::declval<X>()).name()) << std::endl;
+#define LogVal(X) std::cout << #X << " - " << X << std::endl;
+#define Log(X) std::cout << #X << " - " << unmangle(typeid(X).name()) << std::endl;
+#define LogPack(X) std::cout << #X << " - " << unmangle(typeid(std::declval<X>()).name()) << std::endl;
 #endif
 
 namespace Instil
@@ -35,6 +36,9 @@ namespace Instil
     template <class T, class TupleArgs>
     class Builder<T, TupleArgs>
     {
+        template <typename...>
+        friend class Builder;
+
     public:
         static function<shared_ptr<T>(Scope, string)> Register()
         {
@@ -43,12 +47,14 @@ namespace Instil
             std::cout << "Builder<T, TupleArgs>::Register(registrationScope)" << std::endl;
             Log(T)
             Log(TupleArgs)
-            std::cout << "---------------------------------------------------" << std::endl;
+            std::cout
+            << "---------------------------------------------------" << std::endl;
 #endif
 
             return Builder<T, TupleArgs>::BuildInitial;
         }
 
+    private:
         // Entry point when the ctor has no args
         static shared_ptr<T> BuildInitial(Scope scope, string scopeName)
         {
@@ -65,12 +71,13 @@ namespace Instil
             Log(TupleArgs)
             LogVal(scope)
             LogVal(scopeName)
-            std::cout << "---------------------------------------------------" << std::endl;
+            std::cout
+            << "---------------------------------------------------" << std::endl;
 #endif
 
             if (scope == Scope::Singleton)
             {
-                 return SingletonStrategy::Apply<T>(args);
+                return SingletonStrategy::Apply<T>(args);
             }
             else if (scope == Scope::Transient)
             {
@@ -87,7 +94,6 @@ namespace Instil
         }
     };
 
-
     // Specialization for when there are arguments left to add to the ctor
     template <class T, class TupleArgs, class A, typename... Arguments>
     class Builder<T, TupleArgs, A, Arguments...>
@@ -101,11 +107,13 @@ namespace Instil
             Log(T)
             Log(TupleArgs)
             Log(A)
-            std::cout << "---------------------------------------------------" << std::endl;
+            std::cout
+            << "---------------------------------------------------" << std::endl;
 #endif
             return Builder<T, TupleArgs, A, Arguments...>::BuildInitial;
         }
 
+    private:
         // Entry point for building a tuple of args
         static shared_ptr<T> BuildInitial(Scope scope, string scopeName)
         {
@@ -120,7 +128,6 @@ namespace Instil
             return Builder<T, decltype(nextTuple), Arguments...>::Build(scope, scopeName, nextTuple);
         }
     };
-
 } // namespace Instil
 
 #endif

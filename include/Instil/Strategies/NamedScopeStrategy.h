@@ -10,34 +10,32 @@
 
 namespace Instil
 {
-
     using std::get;
     using std::map;
     using std::shared_ptr;
     using std::string;
 
-    template <typename T>
-    class ScopedObjectMap
-    {
-    public:
-        static std::map<string, std::shared_ptr<T>> objects;
-    };
-
-    template <class T>
-    std::map<string, std::shared_ptr<T>> ScopedObjectMap<T>::objects{};
-
     class NamedScopeStrategy
     {
     private:
+        template <typename T>
+        class ScopedObjectMap
+        {
+        public:
+            static std::map<string, std::shared_ptr<T>> objects;
+        };
+
+    private:
         template <class T, typename Tuple, int... Indices>
         static shared_ptr<T> ApplyImpl(string scopeName, const Tuple &x, IndicesType<Indices...>);
-
-        // static map<string, shared_ptr<void>>& GetScopeMap(string scopeName);
 
     public:
         template <class T, typename Tuple>
         static shared_ptr<T> Apply(string scopeName, const Tuple &x);
     };
+
+    template <class T>
+    std::map<string, std::shared_ptr<T>> NamedScopeStrategy::ScopedObjectMap<T>::objects{};
 
     template <class T, typename Tuple, int... Indices>
     shared_ptr<T> NamedScopeStrategy::ApplyImpl(string scopeName, const Tuple &x, IndicesType<Indices...>)
