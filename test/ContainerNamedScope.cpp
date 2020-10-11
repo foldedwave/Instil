@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <functional> // for __base, function
+#include <memory>     // for shared_ptr
+#include <string>     // for operator==
 
 #include "Instil/Container.h" // for Container, Container<>::build
 #include "Instil/Scope.h"     // for Scope, Singleton, Transient

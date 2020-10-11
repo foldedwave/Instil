@@ -50,3 +50,13 @@ add_executable(ContainerVectors ContainerVectors.cpp TestTypes/Simple.cpp TestTy
 target_link_libraries(ContainerVectors PRIVATE InstilLib)
 target_link_libraries(ContainerVectors PRIVATE gtest gmock)
 add_test(NAME ContainerVectors COMMAND ContainerVectors)
+
+add_executable(ContainerMaps ContainerMaps.cpp TestTypes/Simple.cpp TestTypes/SimpleAlternate.cpp TestTypes/WrapMultipleAsMap.cpp)
+target_link_libraries(ContainerMaps PRIVATE InstilLib)
+target_link_libraries(ContainerMaps PRIVATE gtest gmock)
+add_test(NAME ContainerMaps COMMAND ContainerMaps)
+
+add_executable(ContainerTemplated ContainerTemplated.cpp)
+target_link_libraries(ContainerTemplated PRIVATE InstilLib)
+target_link_libraries(ContainerTemplated PRIVATE gtest gmock)
+add_test(NAME ContainerTemplated COMMAND ContainerTemplated)

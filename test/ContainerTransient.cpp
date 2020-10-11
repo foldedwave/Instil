@@ -11,6 +11,7 @@
 #include "TestTypes/WrapSingle.h"
 
 #include <memory>
+#include <string> // for operator==
 
 using Instil::Container;
 using Instil::Scope;
