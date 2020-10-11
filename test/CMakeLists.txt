@@ -55,3 +55,8 @@ add_executable(ContainerMaps ContainerMaps.cpp TestTypes/Simple.cpp TestTypes/Si
 target_link_libraries(ContainerMaps PRIVATE InstilLib)
 target_link_libraries(ContainerMaps PRIVATE gtest gmock)
 add_test(NAME ContainerMaps COMMAND ContainerMaps)
+
+add_executable(ContainerTemplated ContainerTemplated.cpp)
+target_link_libraries(ContainerTemplated PRIVATE InstilLib)
+target_link_libraries(ContainerTemplated PRIVATE gtest gmock)
+add_test(NAME ContainerTemplated COMMAND ContainerTemplated)
