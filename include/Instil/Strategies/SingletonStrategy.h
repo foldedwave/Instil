@@ -16,22 +16,17 @@ namespace Instil
     using std::shared_ptr;
     using std::string;
 
-    template <typename T>
-    class ObjectMap
-    {
-    public:
-        static bool populated;
-        static std::shared_ptr<T> object;
-    };
-
-    template <class T>
-    bool ObjectMap<T>::populated = false;
-
-    template <class T>
-    std::shared_ptr<T> ObjectMap<T>::object{};
-
     class SingletonStrategy
     {
+    private:
+        template <typename T>
+        class ObjectMap
+        {
+        public:
+            static bool populated;
+            static std::shared_ptr<T> object;
+        };
+
     private:
         template <class T, typename Tuple, int... Indices>
         static shared_ptr<T> ApplyImpl(const Tuple &x, IndicesType<Indices...>);
@@ -40,6 +35,12 @@ namespace Instil
         template <class T, typename Tuple>
         static shared_ptr<T> Apply(const Tuple &x);
     };
+
+    template <class T>
+    bool SingletonStrategy::ObjectMap<T>::populated = false;
+
+    template <class T>
+    std::shared_ptr<T> SingletonStrategy::ObjectMap<T>::object{};
 
     template <class T, typename Tuple, int... Indices>
     shared_ptr<T> SingletonStrategy::ApplyImpl(const Tuple &x, IndicesType<Indices...>)
